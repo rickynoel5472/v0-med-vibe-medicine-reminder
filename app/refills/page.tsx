@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Package, AlertTriangle, Plus, Check, ShoppingCart } from "lucide-react"
+import { Package, AlertTriangle, Plus, Check, ShoppingCart, ExternalLink } from "lucide-react"
 import { LargeButton } from "@/components/ui/large-button"
 import { MedVibeCard } from "@/components/ui/medvibe-card"
 import { Modal } from "@/components/ui/modal"
@@ -11,6 +11,14 @@ import { VoiceControls } from "@/components/voice-controls"
 import { medicines } from "@/lib/mock-data"
 import { updateInventory } from "@/lib/api"
 import { useVoice } from "@/lib/hooks"
+
+const pharmacyOptions = [
+  { name: "Netmeds", url: "https://www.netmeds.com", color: "#1aab8a" },
+  { name: "PharmEasy", url: "https://pharmeasy.in", color: "#10847e" },
+  { name: "1mg", url: "https://www.1mg.com", color: "#ff6f61" },
+  { name: "Apollo Pharmacy", url: "https://www.apollopharmacy.in", color: "#002d5b" },
+  { name: "Amazon Pharmacy", url: "https://www.amazon.in/pharmacy", color: "#ff9900" },
+]
 
 export default function RefillsPage() {
   const { speak } = useVoice()
@@ -23,6 +31,8 @@ export default function RefillsPage() {
   )
   const [selectedMedicine, setSelectedMedicine] = useState<(typeof inventory)[0] | null>(null)
   const [showRefillModal, setShowRefillModal] = useState(false)
+  const [showOrderModal, setShowOrderModal] = useState(false)
+  const [orderMedicine, setOrderMedicine] = useState<(typeof inventory)[0] | null>(null)
   const [pillsToAdd, setPillsToAdd] = useState("")
 
   const lowStockMeds = inventory.filter((m) => m.needsRefill)
@@ -56,6 +66,20 @@ export default function RefillsPage() {
       setPillsToAdd("")
       setSelectedMedicine(null)
     }
+  }
+
+  const handleOrderClick = (medicine: (typeof inventory)[0]) => {
+    setOrderMedicine(medicine)
+    setShowOrderModal(true)
+  }
+
+  const handlePharmacyClick = (pharmacyUrl: string, medicineName: string) => {
+    // Open pharmacy site with search query for the medicine
+    const searchUrl = `${pharmacyUrl}/search/all?name=${encodeURIComponent(medicineName)}`
+    window.open(searchUrl, "_blank", "noopener,noreferrer")
+    speak(`Opening pharmacy to order ${medicineName}`)
+    setShowOrderModal(false)
+    setOrderMedicine(null)
   }
 
   return (
@@ -162,7 +186,12 @@ export default function RefillsPage() {
                     >
                       Add Pills
                     </LargeButton>
-                    <LargeButton variant="secondary" icon={ShoppingCart} className="flex-1 !min-h-[56px] !py-3">
+                    <LargeButton
+                      variant="secondary"
+                      icon={ShoppingCart}
+                      className="flex-1 !min-h-[56px] !py-3"
+                      onClick={() => handleOrderClick(medicine)}
+                    >
                       Order
                     </LargeButton>
                   </div>
@@ -213,6 +242,63 @@ export default function RefillsPage() {
             </LargeButton>
             <LargeButton variant="success" icon={Check} onClick={handleAddPills} className="flex-1">
               Add
+            </LargeButton>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={showOrderModal}
+        onClose={() => {
+          setShowOrderModal(false)
+          setOrderMedicine(null)
+        }}
+        title="Order Medicine"
+        description={orderMedicine ? `Choose a pharmacy to order ${orderMedicine.name}` : "Select a pharmacy"}
+      >
+        <div className="space-y-4">
+          <div className="rounded-xl bg-secondary/50 p-4 mb-6">
+            <p className="text-lg font-semibold text-foreground">{orderMedicine?.name}</p>
+            <p className="text-muted-foreground">{orderMedicine?.dosage}</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              Suggested quantity:{" "}
+              {orderMedicine ? Math.max(30, orderMedicine.totalPills - orderMedicine.remainingPills) : 30} pills
+            </p>
+          </div>
+
+          <p className="text-base font-medium text-foreground mb-3">Select Pharmacy:</p>
+
+          <div className="grid gap-3">
+            {pharmacyOptions.map((pharmacy) => (
+              <button
+                key={pharmacy.name}
+                onClick={() => handlePharmacyClick(pharmacy.url, orderMedicine?.name || "")}
+                className="flex items-center justify-between p-4 rounded-xl border-2 border-border hover:border-primary hover:bg-primary/5 transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-lg"
+                    style={{ backgroundColor: pharmacy.color }}
+                  >
+                    {pharmacy.name[0]}
+                  </div>
+                  <span className="text-lg font-medium text-foreground">{pharmacy.name}</span>
+                </div>
+                <ExternalLink className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-border">
+            <LargeButton
+              variant="secondary"
+              onClick={() => {
+                setShowOrderModal(false)
+                setOrderMedicine(null)
+              }}
+              className="w-full"
+            >
+              Cancel
             </LargeButton>
           </div>
         </div>

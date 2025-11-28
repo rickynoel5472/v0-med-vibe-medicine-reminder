@@ -139,7 +139,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="relative mt-6 flex flex-col gap-4 sm:flex-row">
-              <LargeButton variant="success" icon={Check} onClick={() => handleTakeDose(nextDose)} fullWidth>
+              <LargeButton variant="destructive" icon={Check} onClick={() => handleTakeDose(nextDose)} fullWidth>
                 I Took This
               </LargeButton>
               <LargeButton variant="secondary" onClick={() => handleSkipDose(nextDose)} fullWidth>
@@ -182,7 +182,7 @@ export default function DashboardPage() {
                 </div>
                 {dose.status === "pending" && (
                   <LargeButton
-                    variant="success"
+                    variant="destructive"
                     icon={Check}
                     onClick={() => handleTakeDose(dose)}
                     className="!min-h-[56px] !px-6 !py-3"
