@@ -6,7 +6,6 @@ import Link from "next/link"
 import {
   Pill,
   Play,
-  Code,
   ChevronDown,
   Sparkles,
   Bell,
@@ -22,6 +21,7 @@ import {
   Camera,
   FileCheck,
   Activity,
+  LogIn,
 } from "lucide-react"
 
 export default function LandingPage() {
@@ -134,12 +134,21 @@ export default function LandingPage() {
             </Link>
           </nav>
 
-          <button
-            onClick={handleDemoMode}
-            className="rounded-lg bg-primary px-5 py-2 font-semibold text-white transition-all hover:bg-primary/90 hover:scale-105"
-          >
-            Try Demo
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="flex items-center gap-2 rounded-lg border border-white/30 px-4 py-2 font-medium text-white transition-all hover:bg-white/10"
+            >
+              <LogIn className="h-4 w-4" />
+              <span className="hidden sm:inline">Login</span>
+            </Link>
+            <button
+              onClick={handleDemoMode}
+              className="rounded-lg bg-primary px-5 py-2 font-semibold text-white transition-all hover:bg-primary/90 hover:scale-105"
+            >
+              Try Demo
+            </button>
+          </div>
         </div>
       </header>
 
@@ -182,21 +191,20 @@ export default function LandingPage() {
               dose again.
             </p>
 
-            {/* CTA buttons */}
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <button
-                onClick={handleDemoMode}
+              <Link
+                href="/login"
                 className="glow-primary flex min-w-[200px] items-center justify-center gap-2 rounded-xl bg-primary px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-primary/90 hover:scale-105"
               >
-                <Play className="h-5 w-5" />
-                Try Live Demo
-              </button>
+                <ArrowRight className="h-5 w-5" />
+                Get Started
+              </Link>
               <button
-                onClick={() => window.open("https://github.com", "_blank")}
+                onClick={handleDemoMode}
                 className="flex min-w-[200px] items-center justify-center gap-2 rounded-xl border-2 border-foreground/20 bg-white/80 px-8 py-4 text-lg font-semibold text-foreground shadow-lg backdrop-blur-sm transition-all hover:border-foreground/40 hover:bg-white hover:scale-105"
               >
-                <Code className="h-5 w-5" />
-                View Source
+                <Play className="h-5 w-5" />
+                Try Demo
               </button>
             </div>
           </div>
@@ -448,20 +456,20 @@ export default function LandingPage() {
               <p className="mb-8 text-lg text-white/90">
                 Join thousands of patients improving their health with MedVibe
               </p>
-              <div className="flex flex-col justify-center gap-4 sm:flex-row">
-                <button
-                  onClick={() => router.push("/onboarding")}
-                  className="flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-primary shadow-lg transition-all hover:bg-white/90 hover:scale-105"
+              <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Link
+                  href="/login"
+                  className="flex min-w-[180px] items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-primary transition-all hover:bg-white/90 hover:scale-105"
                 >
-                  Start Now
                   <ArrowRight className="h-5 w-5" />
-                </button>
+                  Get Started
+                </Link>
                 <button
                   onClick={handleDemoMode}
-                  className="flex items-center justify-center gap-2 rounded-xl border-2 border-white/30 bg-white/10 px-8 py-4 text-lg font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:scale-105"
+                  className="flex min-w-[180px] items-center justify-center gap-2 rounded-xl border-2 border-white/50 px-8 py-4 text-lg font-semibold text-white transition-all hover:bg-white/10 hover:scale-105"
                 >
                   <Play className="h-5 w-5" />
-                  Watch Demo
+                  Try Demo
                 </button>
               </div>
             </div>
@@ -469,18 +477,28 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="relative border-t border-border bg-navy px-4 py-10">
-        <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
+      {/* Footer */}
+      <footer className="bg-navy px-4 py-8">
         <div className="container mx-auto flex flex-col items-center justify-between gap-4 md:flex-row">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/60">
               <Pill className="h-4 w-4 text-white" />
             </div>
-            <span className="font-semibold text-white">MedVibe</span>
+            <span className="text-lg font-bold text-white">MedVibe</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Heart className="h-4 w-4 text-red-400" />
-            <p className="text-sm text-white/70">Built with care for Hackathon 2025 by Rookie Coders</p>
+          <p className="text-center text-white/70">
+            Built with love by <span className="font-semibold text-white">Rookie Coders</span> for Hackathon 2025
+          </p>
+          <div className="flex items-center gap-4">
+            <Link href="/login" className="text-white/70 transition-colors hover:text-white">
+              Login
+            </Link>
+            <button
+              onClick={handleDemoMode}
+              className="rounded-lg bg-white/10 px-4 py-2 text-white transition-colors hover:bg-white/20"
+            >
+              Demo
+            </button>
           </div>
         </div>
       </footer>
