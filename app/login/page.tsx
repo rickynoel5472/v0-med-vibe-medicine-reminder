@@ -40,16 +40,15 @@ export default function LoginPage() {
       return
     }
 
-    // Store user session
-    sessionStorage.setItem("userLoggedIn", "true")
-    sessionStorage.setItem("userName", formData.name || formData.email.split("@")[0])
-
-    // Redirect to onboarding for new users, dashboard for existing
-    if (isLogin) {
-      router.push("/dashboard")
-    } else {
-      router.push("/onboarding")
+    const userData = {
+      name: formData.name || formData.email.split("@")[0],
+      email: formData.email,
+      isLoggedIn: true,
+      createdAt: new Date().toISOString(),
     }
+    sessionStorage.setItem("userData", JSON.stringify(userData))
+
+    router.push("/user/upload")
   }
 
   return (
@@ -253,14 +252,6 @@ export default function LoginPage() {
               and <button className="text-primary hover:underline">Privacy Policy</button>
             </p>
           </div>
-
-          {/* Demo Mode Link */}
-          <p className="mt-6 text-center text-base text-foreground/80">
-            Just exploring?{" "}
-            <Link href="/dashboard" className="font-semibold text-primary hover:underline">
-              Try the Demo
-            </Link>
-          </p>
         </div>
       </div>
     </div>
